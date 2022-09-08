@@ -6,15 +6,16 @@ import random
 class Game():
     game_id = 1
 
-    def __init__(self, player1_name, player2_name, board_row, board_col):
+    def __init__(self, player1_name, player2_name, max_board_row, max_board_col):
         Game.game_id += 1
         self.player1 = player.Player(player1_name)
         self.player2 = player.Player(player2_name)
-        self.board = board.Board(board_row, board_col)
+        self.board = board.Board(max_board_row, max_board_col)
         self.current_turn = random.choice((1, 2))
-        self.curr_loc_line_x = board_row // 2
-        self.curr_loc_line_y = board_col // 2
+        self.curr_loc_line_x = max_board_row // 2
+        self.curr_loc_line_y = max_board_col // 2
         self.all_locations = [(self.curr_loc_line_x, self.curr_loc_line_y)]
+        self.border = {'horizontal': {0, max_board_row}, 'vertical': {0, max_board_col}}
 
     @classmethod
     def game_standard_size(cls, player1_name, player2_name):
@@ -38,16 +39,32 @@ class Game():
 
         if self.current_turn == 1:
             self.player1.player_move(*field)
-            if not (self.curr_loc_line_x, self.curr_loc_line_y) in self.all_locations:
+            if not (self.detect_previous_loc() or self.detect_border()):
                 self.current_turn = 2
         else:
             self.player2.player_move(*field)
-            if not (self.curr_loc_line_x, self.curr_loc_line_y) in self.all_locations:
+            if not (self.detect_previous_loc() or self.detect_border()):
                 self.current_turn = 1
 
         self.all_locations.append((self.curr_loc_line_x, self.curr_loc_line_y))
 
         return True
+
+    def detect_border(self):
+        if self.curr_loc_line_x in self.border.get('horizontal'):
+            return True
+        elif self.curr_loc_line_y in self.border.get('vertical'):
+            return True
+        else:
+            return False
+
+
+    def detect_previous_loc(self):
+        if (self.curr_loc_line_x, self.curr_loc_line_y) in self.all_locations:
+            return True
+        else:
+            return False
+
 
     def avl_player_moves_geo(self):
         return validate.field_status_possibilities(validate.location_possibilities(self.board, self.curr_loc_line_x, self.curr_loc_line_y))
