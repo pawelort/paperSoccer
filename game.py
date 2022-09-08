@@ -15,7 +15,20 @@ class Game():
         self.curr_loc_line_x = max_board_row // 2
         self.curr_loc_line_y = max_board_col // 2
         self.all_locations = [(self.curr_loc_line_x, self.curr_loc_line_y)]
-        self.border = {'horizontal': {0, max_board_row}, 'vertical': {0, max_board_col}}
+        self.border = {'horizontal': [0, max_board_row], 'vertical': [0, max_board_col]}
+        self.gate_player1 = {(-1, (max_board_col // 2) - 1),
+                             (-1, (max_board_col // 2)),
+                             (-1, (max_board_col // 2) + 1)}
+        self.gate_player2 = {(max_board_row + 1, (max_board_col // 2) - 1),
+                             (max_board_row + 1, (max_board_col // 2)),
+                             (max_board_row + 1, (max_board_col // 2) + 1)}
+        self.game_status = 1
+        """game status
+        1 = game in progress; 
+        11 = pl1 wins due to score; 
+        12 = pl1 wins due to lack of move by pl2; 
+        21 = pl2 wins due to score; 
+        22 = pl2 wins due to lack of move by pl1"""
 
     @classmethod
     def game_standard_size(cls, player1_name, player2_name):
@@ -47,17 +60,21 @@ class Game():
                 self.current_turn = 1
 
         self.all_locations.append((self.curr_loc_line_x, self.curr_loc_line_y))
-
+        self.win_detection()
+        self.defeat_detection()
         return True
 
     def detect_border(self):
         if self.curr_loc_line_x in self.border.get('horizontal'):
-            return True
+            if self.curr_loc_line_y == self.border.get('vertical')[1] // 2:
+                # gate detection
+                return False
+            else:
+                return True
         elif self.curr_loc_line_y in self.border.get('vertical'):
             return True
         else:
             return False
-
 
     def detect_previous_loc(self):
         if (self.curr_loc_line_x, self.curr_loc_line_y) in self.all_locations:
@@ -65,6 +82,17 @@ class Game():
         else:
             return False
 
+    def win_detection(self):
+        if (self.curr_loc_line_x, self.curr_loc_line_y) in self.gate_player1:
+            self.game_status = 21
+        elif (self.curr_loc_line_x, self.curr_loc_line_y) in self.gate_player2:
+            self.game_status = 11
+
+    def defeat_detection(self):
+        if not self.avl_player_moves_geo() and self.current_turn == 1:
+            self.game_status = 22
+        elif not self.avl_player_moves_geo() and self.current_turn == 2:
+            self.game_status = 12
 
     def avl_player_moves_geo(self):
         return validate.field_status_possibilities(validate.location_possibilities(self.board, self.curr_loc_line_x, self.curr_loc_line_y))
@@ -74,4 +102,3 @@ class Game():
 
 # TODO detect when player wins
 # TODO detect when end of game due to lack of possible movements
-# TODO continue movement after contact with border

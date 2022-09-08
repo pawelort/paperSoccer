@@ -49,9 +49,6 @@ class Menu():
             print("please type integers as menu selection")
             self.display_menu()
 
-
-
-
     def move_menu(self):
         if demo_game.current_turn == 1:
             print(f"{demo_game.player1.name} turn")
@@ -71,16 +68,28 @@ class Menu():
 
                 if demo_game.move(req_line_x, req_line_y):
                     print("move successfully executed")
+                    self.end_game()
                     self.menu_lvl = 0
                 else:
                     print("not possible to move, try again")
-
             except ValueError:
                 print("please type integers as coordinates")
-
         else:
             print("undefined command")
 
+    def end_game(self):
+        if demo_game.game_status == 11:
+            print('Congratulations, player1 scores and wins the game!')
+            self.exit_game = True
+        elif demo_game.game_status == 21:
+            print('Congratulations, player2 scores and wins the game!')
+            self.exit_game = True
+        elif demo_game.game_status == 12:
+            print('Player1 wins! Player2 has no possible movement')
+            self.exit_game = True
+        elif demo_game.game_status == 22:
+            print('Player2 wins! Player1 has no possible movement')
+            self.exit_game = True
 
     def display_menu(self):
         if self.menu_lvl == 0:
