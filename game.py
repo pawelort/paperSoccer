@@ -34,14 +34,18 @@ class Game():
 
         self.curr_loc_line_x = req_line_x
         self.curr_loc_line_y = req_line_y
-        self.all_locations.append((self.curr_loc_line_x, self.curr_loc_line_y))
+
 
         if self.current_turn == 1:
             self.player1.player_move(*field)
-            self.current_turn = 2
+            if not (self.curr_loc_line_x, self.curr_loc_line_y) in self.all_locations:
+                self.current_turn = 2
         else:
             self.player2.player_move(*field)
-            self.current_turn = 1
+            if not (self.curr_loc_line_x, self.curr_loc_line_y) in self.all_locations:
+                self.current_turn = 1
+
+        self.all_locations.append((self.curr_loc_line_x, self.curr_loc_line_y))
 
         return True
 
@@ -51,3 +55,6 @@ class Game():
     def avl_player_moves_cartesian(self):
         return validate.avl_cartesian_coordinate(self.curr_loc_line_x, self.curr_loc_line_y, self.avl_player_moves_geo())
 
+# TODO detect when player wins
+# TODO detect when end of game due to lack of possible movements
+# TODO continue movement after contact with border
