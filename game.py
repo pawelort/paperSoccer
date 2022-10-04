@@ -1,13 +1,14 @@
 import player_movement as player
 import player_move_validation as validate
 import board
+import model
 import random
 
+model_handler = model.ModelHandler(model.game_db)
+
 class Game():
-    game_id = 1
 
     def __init__(self, player1_name, player2_name, max_board_row, max_board_col):
-        Game.game_id += 1
         self.player1 = player.Player(player1_name)
         self.player2 = player.Player(player2_name)
         self.board = board.Board(max_board_row, max_board_col)
@@ -23,6 +24,18 @@ class Game():
                              (max_board_row + 1, (max_board_col // 2)),
                              (max_board_row + 1, (max_board_col // 2) + 1)}
         self.game_status = 1
+
+        self.game_id = model_handler.game_to_database(self.player1,
+                                                      self.player2,
+                                                      self.board,
+                                                      self.current_turn,
+                                                      self.curr_loc_line_x,
+                                                      self.curr_loc_line_y,
+                                                      self.all_locations,
+                                                      self.border,
+                                                      self.gate_player1,
+                                                      self.gate_player2,
+                                                      self.game_status)
         """game status
         1 = game in progress; 
         11 = pl1 wins due to score; 
@@ -100,5 +113,39 @@ class Game():
     def avl_player_moves_cartesian(self):
         return validate.avl_cartesian_coordinate(self.curr_loc_line_x, self.curr_loc_line_y, self.avl_player_moves_geo())
 
-# TODO detect when player wins
-# TODO detect when end of game due to lack of possible movements
+
+class OngoingGame(Game):
+    def __init__(self, game_id):
+        game = model_handler.game_from_database(game_id)
+        self.player1 = player.PlayerExisting(game.get("player1").get("name"),
+                                             game.get("player1").get("amount_of_moves"),
+                                             game.get("player1").get("all_moves"))
+        self.player2 = player.PlayerExisting(game.get("player2").get("name"),
+                                             game.get("player2").get("amount_of_moves"),
+                                             game.get("player2").get("all_moves"))
+        self.board = board.BoardOngoingGame(game.get("board").obj.get('rows'),
+                                            game.get("board").obj.obj.get('cols'),
+                                            game.get("board").obj.obj.get('fields'))
+        self.current_turn = game.get("current_turn")
+        self.curr_loc_line_x = game.get("curr_loc_line_x")
+        self.curr_loc_line_y = game.get("curr_loc_line_y")
+        self.all_locations = game.get("all_locations")
+        self.border = game.get("border")
+        self.gate_player1 = game.get("gate_player1")
+        self.gate_player2 = game.get("gate_player2")
+        self.game_status = game.get("game_status")
+        self.game_id = game_id
+
+    def update_game(self):
+        model_handler.update_game_database(self.game_id,
+                                           self.player1,
+                                           self.player2,
+                                           self.board,
+                                           self.current_turn,
+                                           self.curr_loc_line_x,
+                                           self.curr_loc_line_y,
+                                           self.all_locations,
+                                           self.border,
+                                           self.gate_player1,
+                                           self.gate_player2,
+                                           self.game_status)

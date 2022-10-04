@@ -1,5 +1,7 @@
 import openpyxl
 from openpyxl.styles.borders import Border, Side
+
+
 class CoreField():
     def __init__(self, row, col):
         self.row = row
@@ -17,19 +19,33 @@ class CoreField():
     def available_moves(self):
         return {direction: status for direction, status in self.status.items() if status == False}
 
+
 class CustomField(CoreField):
     def __init__(self, row, col, **borders):
         super().__init__(row, col)
         self.status.update(borders)
 
-
+class FieldOngoingGame(CoreField):
+    def __init__(self, row, col, status):
+        self.row = row
+        self.col = col
+        self.status = status
 
 class Board():
-    # indexes of rows and colums are 1 based
+    # indexes of rows and columns are 1 based
     def __init__(self, rows, cols):
         self.rows = rows
         self.cols = cols
         self.fields = {}
+
+    def move_executed(self, row, col, direction):
+        return self.fields.get((row, col)).status_change(direction)
+
+
+class BoardNewGame(Board):
+    def __init__(self, rows, cols):
+        super().__init__(rows, cols)
+
         gate_pos = [int(self.cols // 2), int(self.cols // 2) + 1]
         for x in range(1, self.rows + 1):
             for y in range(1, self.cols + 1):
@@ -54,8 +70,12 @@ class Board():
 
         # self.board = {(x, y): SingleField(x, y) for x in range(1, rows + 1) for y in range(1, cols + 1)}
 
-    def move_executed(self, row, col, direction):
-        return self.fields.get((row, col)).status_change(direction)
+class BoardOngoingGame(Board):
+    def __init__(self, rows, cols, fields):
+        super().__init__(rows, cols)
+        for field in fields:
+            self.fields.update({(field.get('row'), field.get('col')): FieldOngoingGame(field.get('row'), field.get('col'), field.get('status'))})
+
 
 def create_board(rows, cols):
     # amount of columns need to be even, and greater than 6
