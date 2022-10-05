@@ -56,4 +56,5 @@ class ModelHandler():
 
 
     def game_from_database(self, game_id):
-        return self.database.find_one({"_id": game_id})
+        current_game_id = ObjectId(game_id)
+        return self.database.find_one({"_id": current_game_id})

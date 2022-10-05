@@ -11,31 +11,31 @@ class Game():
     def __init__(self, player1_name, player2_name, max_board_row, max_board_col):
         self.player1 = player.Player(player1_name)
         self.player2 = player.Player(player2_name)
-        self.board = board.Board(max_board_row, max_board_col)
+        self.board = board.BoardNewGame(max_board_row, max_board_col)
         self.current_turn = random.choice((1, 2))
         self.curr_loc_line_x = max_board_row // 2
         self.curr_loc_line_y = max_board_col // 2
         self.all_locations = [(self.curr_loc_line_x, self.curr_loc_line_y)]
         self.border = {'horizontal': [0, max_board_row], 'vertical': [0, max_board_col]}
-        self.gate_player1 = {(-1, (max_board_col // 2) - 1),
+        self.gate_player1 = ((-1, (max_board_col // 2) - 1),
                              (-1, (max_board_col // 2)),
-                             (-1, (max_board_col // 2) + 1)}
-        self.gate_player2 = {(max_board_row + 1, (max_board_col // 2) - 1),
+                             (-1, (max_board_col // 2) + 1))
+        self.gate_player2 = ((max_board_row + 1, (max_board_col // 2) - 1),
                              (max_board_row + 1, (max_board_col // 2)),
-                             (max_board_row + 1, (max_board_col // 2) + 1)}
+                             (max_board_row + 1, (max_board_col // 2) + 1))
         self.game_status = 1
 
-        self.game_id = model_handler.game_to_database(self.player1,
-                                                      self.player2,
-                                                      self.board,
-                                                      self.current_turn,
-                                                      self.curr_loc_line_x,
-                                                      self.curr_loc_line_y,
-                                                      self.all_locations,
-                                                      self.border,
-                                                      self.gate_player1,
-                                                      self.gate_player2,
-                                                      self.game_status)
+        self.game_id = str(model_handler.game_to_database(self.player1,
+                                                          self.player2,
+                                                          self.board,
+                                                          self.current_turn,
+                                                          self.curr_loc_line_x,
+                                                          self.curr_loc_line_y,
+                                                          self.all_locations,
+                                                          self.border,
+                                                          self.gate_player1,
+                                                          self.gate_player2,
+                                                          self.game_status).inserted_id)
         """game status
         1 = game in progress; 
         11 = pl1 wins due to score; 
@@ -123,9 +123,9 @@ class OngoingGame(Game):
         self.player2 = player.PlayerExisting(game.get("player2").get("name"),
                                              game.get("player2").get("amount_of_moves"),
                                              game.get("player2").get("all_moves"))
-        self.board = board.BoardOngoingGame(game.get("board").obj.get('rows'),
-                                            game.get("board").obj.obj.get('cols'),
-                                            game.get("board").obj.obj.get('fields'))
+        self.board = board.BoardOngoingGame(game.get("board").get('rows'),
+                                            game.get("board").get('cols'),
+                                            game.get("board").get('fields'))
         self.current_turn = game.get("current_turn")
         self.curr_loc_line_x = game.get("curr_loc_line_x")
         self.curr_loc_line_y = game.get("curr_loc_line_y")
