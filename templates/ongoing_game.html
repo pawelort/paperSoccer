@@ -5,7 +5,28 @@
     <title>Ongoing game</title>
 </head>
 <body>
-<h1>game number {{ game_id }}</h1>
-<p>{{ player1_name }} vs {{ player2_name }}</p>
+<h1>game number {{ game.game_id }}</h1>
+<p>{{ game.player1.name }} vs {{ game.player2.name }}</p>
+<p>Currently
+    {% if game.current_turn == 1 %}
+        {{ game.player1.name }}
+    {% else %}
+        {{ game.player2.name }}
+    {% endif %}
+    turns</p>
+<p>Current position: {{ game.curr_loc_line_x }} row</p>
+<p>Current position: {{ game.curr_loc_line_y }} column</p>
+<hr>
+<p>Previous moves of {{ game.player1.name }}:</p>
+<p>Previous moves of {{ game.player2.name }}:</p>
+<p>All locations visited: {{ game.all_locations }}:</p>
+<hr>
+<p>Available moves:</p>
+<form method="post">
+    {% for move in avl_moves %}
+        <label><input type="radio" name="sel_move" value="{{ move }}">{{ move }}</label>
+    {% endfor %}
+    <div><button type="submit">Make a move!</button></div>
+</form>
 </body>
 </html>

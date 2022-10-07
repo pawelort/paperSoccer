@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Game finished</title>
+</head>
+<body>
+<h1>game number {{ game.game_id }}</h1>
+<p>{{ game.player1.name }} vs {{ game.player2.name }}</p>
+<p>Game wins
+    {% if game.game_status == 11 %}
+        {{ game.player1.name }} due to score!
+    {% elif game.game_status == 12 %}
+        {{ game.player1.name }} due to lack of move by {{ game.player2.name }}
+    {% elif game.game_status == 21 %}
+        {{ game.player2.name }} due to score!
+    {% elif game.game_status == 22 %}
+        {{ game.player2.name }} due to lack of move by {{ game.player1.name }}
+    {% endif %}
+    Congratulations!</p>
+
+</body>
+</html>

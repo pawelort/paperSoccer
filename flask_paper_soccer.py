@@ -11,7 +11,7 @@ app = Flask('paper soccer')
 def main_screen():
     return render_template('main_screen.html')
 
-@app.route("/new_game", methods=['POST', 'GET'])
+@app.route("/new_game", methods=["POST", "GET"])
 def new_game():
     if request.method == "POST":
         game_param = (request.form.get('pl1_name'),
@@ -27,10 +27,27 @@ def new_game():
 def load_game():
     return render_template('load_game.html')
 
-@app.route("/game/<game_id>")
+@app.route("/game_finished/<game_id>")
+def game_finished(game_id):
+    current_game = game.OngoingGame(str(game_id))
+    return render_template('game_finished.html', game=current_game)
+
+@app.route("/game/<game_id>", methods=["POST", "GET"])
 def ongoing_game(game_id):
     current_game = game.OngoingGame(str(game_id))
-    return render_template('ongoing_game.html',
-                           game_id=current_game.game_id,
-                           player1_name=current_game.player1.name,
-                           player2_name=current_game.player2.name)
+    if request.method == "GET":
+        cartesian_moves = current_game.avl_player_moves_cartesian()
+        return render_template('ongoing_game.html', game=current_game,
+                               avl_moves=cartesian_moves)
+    else:
+        move_request = request.form.get('sel_move')
+        if move_request:
+            move_selected = [int(i) for i in request.form.get('sel_move') if i.isnumeric()]
+        else:
+            move_selected = current_game.avl_player_moves_cartesian()[0]
+        current_game.move(*move_selected)
+        current_game.update_game()
+        if current_game.game_status == 1:
+            return redirect(url_for('ongoing_game', game_id=current_game.game_id))
+        else:
+            return redirect(url_for('game_finished', game_id=current_game.game_id))
