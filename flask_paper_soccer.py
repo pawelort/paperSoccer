@@ -35,10 +35,12 @@ def game_finished(game_id):
 @app.route("/game/<game_id>", methods=["POST", "GET"])
 def ongoing_game(game_id):
     current_game = game.OngoingGame(str(game_id))
+    temp_visu_px_res = 30
     if request.method == "GET":
         cartesian_moves = current_game.avl_player_moves_cartesian()
         return render_template('ongoing_game.html', game=current_game,
-                               avl_moves=cartesian_moves)
+                               avl_moves=cartesian_moves,
+                               pixel_res=temp_visu_px_res)
     else:
         move_request = request.form.get('sel_move')
         if move_request:
