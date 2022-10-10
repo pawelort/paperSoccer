@@ -35,35 +35,35 @@ def field_status_possibilities(pos_fields):
     # moves availability based on compass rose
     player_available_moves = []
     if pos_fields[0]:
-        if pos_fields[0].status.get('bottom') == False:
+        if pos_fields[0].status.get('bottom') == 0:
             player_available_moves.append('e')
-        if pos_fields[0].status.get('d2') == False:
+        if pos_fields[0].status.get('d2') == 0:
             player_available_moves.append('ne')
-        if pos_fields[0].status.get('left') == False:
+        if pos_fields[0].status.get('left') == 0:
             player_available_moves.append('n')
 
     if pos_fields[1]:
-        if pos_fields[1].status.get('right') == False:
+        if pos_fields[1].status.get('right') == 0:
             player_available_moves.append('n')
-        if pos_fields[1].status.get('d1') == False:
+        if pos_fields[1].status.get('d1') == 0:
             player_available_moves.append('nw')
-        if pos_fields[1].status.get('bottom') == False:
+        if pos_fields[1].status.get('bottom') == 0:
             player_available_moves.append('w')
 
     if pos_fields[2]:
-        if pos_fields[2].status.get('top') == False:
+        if pos_fields[2].status.get('top') == 0:
             player_available_moves.append('w')
-        if pos_fields[2].status.get('d2') == False:
+        if pos_fields[2].status.get('d2') == 0:
             player_available_moves.append('sw')
-        if pos_fields[2].status.get('right') == False:
+        if pos_fields[2].status.get('right') == 0:
             player_available_moves.append('s')
 
     if pos_fields[3]:
-        if pos_fields[3].status.get('left') == False:
+        if pos_fields[3].status.get('left') == 0:
             player_available_moves.append('s')
-        if pos_fields[3].status.get('d1') == False:
+        if pos_fields[3].status.get('d1') == 0:
             player_available_moves.append('se')
-        if pos_fields[3].status.get('top') == False:
+        if pos_fields[3].status.get('top') == 0:
             player_available_moves.append('e')
 
     return player_available_moves

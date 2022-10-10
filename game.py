@@ -56,7 +56,7 @@ class Game():
         if field[2] == None:
             return False
 
-        if not self.board.move_executed(*field):
+        if not self.board.move_executed(*field, player=self.current_turn):
             return False
 
         self.curr_loc_line_x = req_line_x

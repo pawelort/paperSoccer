@@ -6,12 +6,12 @@ class CoreField():
     def __init__(self, row, col):
         self.row = row
         self.col = col
-        self.status = {'d1': False,
-                       'd2': False}
+        self.status = {'d1': 0,
+                       'd2': 0}
 
-    def status_change(self, direction):
-        if self.status.get(direction) == False:
-            self.status[direction] = True
+    def status_change(self, direction, player):
+        if self.status.get(direction) == 0:
+            self.status[direction] = player
             return True
         else:
             return False
@@ -38,8 +38,8 @@ class Board():
         self.cols = cols
         self.fields = {}
 
-    def move_executed(self, row, col, direction):
-        return self.fields.get((row, col)).status_change(direction)
+    def move_executed(self, row, col, direction, player):
+        return self.fields.get((row, col)).status_change(direction, player)
 
 
 class BoardNewGame(Board):
@@ -53,19 +53,19 @@ class BoardNewGame(Board):
                 if x == self.rows and y == self.cols:
                     self.fields[pos] = CoreField(x, y)
                 elif x == self.rows and y in gate_pos:
-                    self.fields[pos] = CustomField(x, y, right=False, bottom=False)
+                    self.fields[pos] = CustomField(x, y, right=0, bottom=0)
                 elif x == self.rows:
-                    self.fields[pos] = CustomField(x, y, right=False)
+                    self.fields[pos] = CustomField(x, y, right=0)
                 elif y == self.cols:
-                    self.fields[pos] = CustomField(x, y, bottom=False)
+                    self.fields[pos] = CustomField(x, y, bottom=0)
                 elif x == 1 and y in gate_pos:
-                    self.fields[pos] = CustomField(x, y, right=False, top=False, bottom=False)
+                    self.fields[pos] = CustomField(x, y, right=0, top=0, bottom=0)
                 else:
-                    self.fields[pos] = CustomField(x, y, right=False, bottom=False)
+                    self.fields[pos] = CustomField(x, y, right=0, bottom=0)
 
-        self.fields[0, gate_pos[0]] = CustomField(0, gate_pos[0], right=False)
+        self.fields[0, gate_pos[0]] = CustomField(0, gate_pos[0], right=0)
         self.fields[0, gate_pos[1]] = CoreField(0, gate_pos[1])
-        self.fields[self.rows + 1, gate_pos[0]] = CustomField(self.rows + 1, gate_pos[0], right=False)
+        self.fields[self.rows + 1, gate_pos[0]] = CustomField(self.rows + 1, gate_pos[0], right=0)
         self.fields[self.rows + 1, gate_pos[1]] = CoreField(self.rows + 1, gate_pos[1])
 
         # self.board = {(x, y): SingleField(x, y) for x in range(1, rows + 1) for y in range(1, cols + 1)}
