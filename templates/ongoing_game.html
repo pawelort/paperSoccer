@@ -42,10 +42,10 @@
         {% for pos, field in game.board.fields.items() %}
             {% for field_name, status in field.status.items() %}
             {% if field_name == 'd1' %}
-                <line x1="{{ 0 + pixel_res * pos[1] }}"
-                      y1="{{ 0 + pixel_res * pos[0] }}"
-                      x2="{{ pixel_res + pixel_res * pos[1] }}"
-                      y2="{{ pixel_res + pixel_res * pos[0] }}"
+                <line x1="{{ offset_x + 0 + pixel_res * pos[1] }}"
+                      y1="{{ offset_y + 0 + pixel_res * pos[0] }}"
+                      x2="{{ offset_x + pixel_res + pixel_res * pos[1] }}"
+                      y2="{{ offset_y + pixel_res + pixel_res * pos[0] }}"
                       stroke="{% if status == 0 %}
                               lightgrey
                               {% elif status == 1 %}
@@ -56,10 +56,10 @@
 
             {% endif %}
             {% if field_name == 'd2' %}
-                <line x1="{{ 0 + pixel_res * pos[1] }}"
-                      y1="{{ pixel_res + pixel_res * pos[0] }}"
-                      x2="{{ pixel_res + pixel_res * pos[1] }}"
-                      y2="{{ 0 + pixel_res * pos[0] }}"
+                <line x1="{{ offset_x + 0 + pixel_res * pos[1] }}"
+                      y1="{{ offset_y + pixel_res + pixel_res * pos[0] }}"
+                      x2="{{ offset_x + pixel_res + pixel_res * pos[1] }}"
+                      y2="{{ offset_y + 0 + pixel_res * pos[0] }}"
                       stroke="{% if status == 0 %}
                               lightgrey
                               {% elif status == 1 %}
@@ -70,10 +70,10 @@
 
             {% endif %}
             {% if field_name == 'top' %}
-                <line x1="{{ 0 + pixel_res * pos[1] }}"
-                      y1="{{ 0 + pixel_res * pos[0] }}"
-                      x2="{{ pixel_res + pixel_res * pos[1] }}"
-                      y2="{{ 0 + pixel_res * pos[0] }}"
+                <line x1="{{ offset_x + 0 + pixel_res * pos[1] }}"
+                      y1="{{ offset_y + 0 + pixel_res * pos[0] }}"
+                      x2="{{ offset_x + pixel_res + pixel_res * pos[1] }}"
+                      y2="{{ offset_y + 0 + pixel_res * pos[0] }}"
                       stroke="{% if status == 0 %}
                               lightgrey
                               {% elif status == 1 %}
@@ -84,10 +84,10 @@
 
             {% endif %}
             {% if field_name == 'left' %}
-                <line x1="{{ 0 + pixel_res * pos[1] }}"
-                      y1="{{ 0 + pixel_res * pos[0] }}"
-                      x2="{{ 0 + pixel_res * pos[1] }}"
-                      y2="{{ pixel_res + pixel_res * pos[0] }}"
+                <line x1="{{ offset_x + 0 + pixel_res * pos[1] }}"
+                      y1="{{ offset_y + 0 + pixel_res * pos[0] }}"
+                      x2="{{ offset_x + 0 + pixel_res * pos[1] }}"
+                      y2="{{ offset_y + pixel_res + pixel_res * pos[0] }}"
                       stroke="{% if status == 0 %}
                               lightgrey
                               {% elif status == 1 %}
@@ -97,10 +97,10 @@
                               {% endif %}" />
             {% endif %}
             {% if field_name == 'bottom' %}
-                <line x1="{{ 0 + pixel_res * pos[1] }}"
-                      y1="{{ pixel_res + pixel_res * pos[0] }}"
-                      x2="{{ pixel_res + pixel_res * pos[1] }}"
-                      y2="{{ pixel_res + pixel_res * pos[0] }}"
+                <line x1="{{ offset_x + 0 + pixel_res * pos[1] }}"
+                      y1="{{ offset_y + pixel_res + pixel_res * pos[0] }}"
+                      x2="{{ offset_x + pixel_res + pixel_res * pos[1] }}"
+                      y2="{{ offset_y + pixel_res + pixel_res * pos[0] }}"
                       stroke="{% if status == 0 %}
                               lightgrey
                               {% elif status == 1 %}
@@ -110,10 +110,10 @@
                               {% endif %}" />
             {% endif %}
             {% if field_name == 'right' %}
-                <line x1="{{ pixel_res + pixel_res * pos[1] }}"
-                      y1="{{ 0 + pixel_res * pos[0] }}"
-                      x2="{{ pixel_res + pixel_res * pos[1] }}"
-                      y2="{{ pixel_res + pixel_res * pos[0] }}"
+                <line x1="{{ offset_x + pixel_res + pixel_res * pos[1] }}"
+                      y1="{{ offset_y + 0 + pixel_res * pos[0] }}"
+                      x2="{{ offset_x + pixel_res + pixel_res * pos[1] }}"
+                      y2="{{ offset_y + pixel_res + pixel_res * pos[0] }}"
                       stroke="{% if status == 0 %}
                               lightgrey
                               {% elif status == 1 %}
@@ -124,6 +124,13 @@
             {% endif %}
             {% endfor %}
         {% endfor %}
+        {% for row_label in range(game.board.rows + 2) %}
+            <text x="0" y="{{offset_y + pixel_res + row_label * pixel_res}}" font-size="15px">{{ row_label }}</text>
+        {% endfor %}
+        {% for col_label in range(game.board.cols + 1) %}
+            <text x="{{offset_x + pixel_res + col_label * pixel_res}}" y="15" font-size="15px">{{ col_label }}</text>
+        {% endfor %}
+
     </svg>
 
 </body>
