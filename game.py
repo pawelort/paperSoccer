@@ -74,7 +74,8 @@ class Game():
 
         self.all_locations.append((self.curr_loc_line_x, self.curr_loc_line_y))
         self.win_detection()
-        self.defeat_detection()
+        if self.game_status == 1:
+            self.defeat_detection()
         return True
 
     def detect_border(self):
@@ -90,15 +91,15 @@ class Game():
             return False
 
     def detect_previous_loc(self):
-        if (self.curr_loc_line_x, self.curr_loc_line_y) in self.all_locations:
+        if [self.curr_loc_line_x, self.curr_loc_line_y] in self.all_locations:
             return True
         else:
             return False
 
     def win_detection(self):
-        if (self.curr_loc_line_x, self.curr_loc_line_y) in self.gate_player1:
+        if [self.curr_loc_line_x, self.curr_loc_line_y] in self.gate_player1:
             self.game_status = 21
-        elif (self.curr_loc_line_x, self.curr_loc_line_y) in self.gate_player2:
+        elif [self.curr_loc_line_x, self.curr_loc_line_y] in self.gate_player2:
             self.game_status = 11
 
     def defeat_detection(self):

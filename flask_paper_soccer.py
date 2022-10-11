@@ -23,18 +23,21 @@ def new_game():
     else:
         return render_template('new_game.html')
 
-@app.route("/load_game")
+@app.route("/load_game", methods=["POST", "GET"])
 def load_game():
-    return render_template('load_game.html')
+    if request.method == "GET":
+        return render_template('load_game.html')
+    else:
+        return redirect(url_for('ongoing_game', game_id=request.form.get('game_no')))
 
 @app.route("/game_finished/<game_id>")
 def game_finished(game_id):
-    current_game = game.OngoingGame(str(game_id))
+    current_game = game.OngoingGame(game_id)
     return render_template('game_finished.html', game=current_game)
 
 @app.route("/game/<game_id>", methods=["POST", "GET"])
 def ongoing_game(game_id):
-    current_game = game.OngoingGame(str(game_id))
+    current_game = game.OngoingGame(game_id)
     temp_visu_px_res = 30
     if request.method == "GET":
         cartesian_moves = current_game.avl_player_moves_cartesian()
@@ -43,10 +46,10 @@ def ongoing_game(game_id):
                                pixel_res=temp_visu_px_res)
     else:
         move_request = request.form.get('sel_move')
-        if move_request:
-            move_selected = [int(i) for i in request.form.get('sel_move') if i.isnumeric()]
-        else:
+        if move_request == None:
             move_selected = current_game.avl_player_moves_cartesian()[0]
+        else:
+            move_selected = tuple(map(int, move_request[1:-1].split(',')))
         current_game.move(*move_selected)
         current_game.update_game()
         if current_game.game_status == 1:
