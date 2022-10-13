@@ -7,6 +7,12 @@ import game
 
 app = Flask('paper soccer')
 
+# temporary visualisation auxiliary parameters
+
+temp_visu_px_res = 30
+temp_visu_px_offset_x = 0
+temp_visu_px_offset_y = 15
+
 @app.route("/")
 def main_screen():
     return render_template('main_screen.html')
@@ -33,21 +39,24 @@ def load_game():
 @app.route("/game_finished/<game_id>")
 def game_finished(game_id):
     current_game = game.OngoingGame(game_id)
-    return render_template('game_finished.html', game=current_game)
+    return render_template('game_finished.html', game=current_game,
+                           pixel_res=temp_visu_px_res,
+                           offset_x=temp_visu_px_offset_x,
+                           offset_y=temp_visu_px_offset_y)
 
 @app.route("/game/<game_id>", methods=["POST", "GET"])
 def ongoing_game(game_id):
     current_game = game.OngoingGame(game_id)
-    temp_visu_px_res = 30
-    temp_visu_px_offset_x = 0
-    temp_visu_px_offset_y = 15
     if request.method == "GET":
-        cartesian_moves = current_game.avl_player_moves_cartesian()
-        return render_template('ongoing_game.html', game=current_game,
-                               avl_moves=cartesian_moves,
-                               pixel_res=temp_visu_px_res,
-                               offset_x=temp_visu_px_offset_x,
-                               offset_y=temp_visu_px_offset_y)
+        if current_game.game_status == 1:
+            cartesian_moves = current_game.avl_player_moves_cartesian()
+            return render_template('ongoing_game.html', game=current_game,
+                                   avl_moves=cartesian_moves,
+                                   pixel_res=temp_visu_px_res,
+                                   offset_x=temp_visu_px_offset_x,
+                                   offset_y=temp_visu_px_offset_y)
+        else:
+            return redirect(url_for('game_finished', game_id=current_game.game_id))
     else:
         move_request = request.form.get('sel_move')
         if move_request == None:

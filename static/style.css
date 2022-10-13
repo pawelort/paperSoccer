@@ -1,0 +1,47 @@
+* {
+    margin: 0.5em;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+hr {
+    width: 30%;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #faebd7;
+}
+
+p {
+    margin: 0.5em 0 0.5em 0;
+}
+
+.radio_options {
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+}
+
+.radio_options > label {
+    padding: 5.5em
+    background-color: #fff;
+
+}
+
+
+button {
+    background-color: #45B8AC;
+    padding: 10px;
+    border: solid 1px #45B8AC;
+    border-radius: 3px;
+    color: #fff;
+}
+
+button a:visited,
+button a:link {
+    color: #fff;
+    text-decoration: none;
+}

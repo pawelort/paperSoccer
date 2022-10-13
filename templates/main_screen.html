@@ -2,18 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="..\static\style.css" type="text/css">
     <title>Paper soccer main screen</title>
 </head>
 <body>
 <h1>Welcome in paper soccer game</h1>
 <p>What would You like to do?</p>
 <p>
-    <button>
+    <button type="button">
         <a href="{{ url_for('new_game') }}">New game</a>
     </button>
 </p>
 <p>
-    <button>
+    <button type="button">
         <a href="{{ url_for('load_game') }}">Load game</a>
     </button>
 </p>

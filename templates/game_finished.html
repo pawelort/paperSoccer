@@ -2,22 +2,129 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="..\static\style.css" type="text/css">
     <title>Game finished</title>
 </head>
 <body>
-<h1>game number {{ game.game_id }}</h1>
-<p>{{ game.player1.name }} vs {{ game.player2.name }}</p>
-<p>Game wins
-    {% if game.game_status == 11 %}
-        {{ game.player1.name }} due to score!
-    {% elif game.game_status == 12 %}
-        {{ game.player1.name }} due to lack of move by {{ game.player2.name }}
-    {% elif game.game_status == 21 %}
-        {{ game.player2.name }} due to score!
-    {% elif game.game_status == 22 %}
-        {{ game.player2.name }} due to lack of move by {{ game.player1.name }}
-    {% endif %}
-    Congratulations!</p>
+    <h1>game number {{ game.game_id }}</h1>
+    <p>{{ game.player1.name }} vs {{ game.player2.name }}</p>
+    <p>Game wins
+        {% if game.game_status == 11 %}
+            {{ game.player1.name }} due to score!
+        {% elif game.game_status == 12 %}
+            {{ game.player1.name }} due to lack of move by {{ game.player2.name }}
+        {% elif game.game_status == 21 %}
+            {{ game.player2.name }} due to score!
+        {% elif game.game_status == 22 %}
+            {{ game.player2.name }} due to lack of move by {{ game.player1.name }}
+        {% endif %}
+        Congratulations!
+    </p>
+    <hr>
+    <svg height="{{ offset_y + (game.board.rows + 2) * pixel_res }}" width="{{ offset_x + (game.board.cols + 2) * pixel_res }}">
+        {% for pos, field in game.board.fields.items() %}
+            {% for field_name, status in field.status.items() %}
+            {% if field_name == 'd1' %}
+                <line x1="{{ offset_x + 0 + pixel_res * pos[1] }}"
+                      y1="{{ offset_y + 0 + pixel_res * pos[0] }}"
+                      x2="{{ offset_x + pixel_res + pixel_res * pos[1] }}"
+                      y2="{{ offset_y + pixel_res + pixel_res * pos[0] }}"
+                      stroke="{% if status == 0 %}
+                              lightgrey
+                              {% elif status == 1 %}
+                              red
+                              {% elif status == 2 %}
+                              blue
+                              {% endif %}" />
 
+            {% endif %}
+            {% if field_name == 'd2' %}
+                <line x1="{{ offset_x + 0 + pixel_res * pos[1] }}"
+                      y1="{{ offset_y + pixel_res + pixel_res * pos[0] }}"
+                      x2="{{ offset_x + pixel_res + pixel_res * pos[1] }}"
+                      y2="{{ offset_y + 0 + pixel_res * pos[0] }}"
+                      stroke="{% if status == 0 %}
+                              lightgrey
+                              {% elif status == 1 %}
+                              red
+                              {% elif status == 2 %}
+                              blue
+                              {% endif %}" />
+
+            {% endif %}
+            {% if field_name == 'top' %}
+                <line x1="{{ offset_x + 0 + pixel_res * pos[1] }}"
+                      y1="{{ offset_y + 0 + pixel_res * pos[0] }}"
+                      x2="{{ offset_x + pixel_res + pixel_res * pos[1] }}"
+                      y2="{{ offset_y + 0 + pixel_res * pos[0] }}"
+                      stroke="{% if status == 0 %}
+                              lightgrey
+                              {% elif status == 1 %}
+                              red
+                              {% elif status == 2 %}
+                              blue
+                              {% endif %}" />
+
+            {% endif %}
+            {% if field_name == 'left' %}
+                <line x1="{{ offset_x + 0 + pixel_res * pos[1] }}"
+                      y1="{{ offset_y + 0 + pixel_res * pos[0] }}"
+                      x2="{{ offset_x + 0 + pixel_res * pos[1] }}"
+                      y2="{{ offset_y + pixel_res + pixel_res * pos[0] }}"
+                      stroke="{% if status == 0 %}
+                              lightgrey
+                              {% elif status == 1 %}
+                              red
+                              {% elif status == 2 %}
+                              blue
+                              {% endif %}" />
+            {% endif %}
+            {% if field_name == 'bottom' %}
+                <line x1="{{ offset_x + 0 + pixel_res * pos[1] }}"
+                      y1="{{ offset_y + pixel_res + pixel_res * pos[0] }}"
+                      x2="{{ offset_x + pixel_res + pixel_res * pos[1] }}"
+                      y2="{{ offset_y + pixel_res + pixel_res * pos[0] }}"
+                      stroke="{% if status == 0 %}
+                              lightgrey
+                              {% elif status == 1 %}
+                              red
+                              {% elif status == 2 %}
+                              blue
+                              {% endif %}" />
+            {% endif %}
+            {% if field_name == 'right' %}
+                <line x1="{{ offset_x + pixel_res + pixel_res * pos[1] }}"
+                      y1="{{ offset_y + 0 + pixel_res * pos[0] }}"
+                      x2="{{ offset_x + pixel_res + pixel_res * pos[1] }}"
+                      y2="{{ offset_y + pixel_res + pixel_res * pos[0] }}"
+                      stroke="{% if status == 0 %}
+                              lightgrey
+                              {% elif status == 1 %}
+                              red
+                              {% elif status == 2 %}
+                              blue
+                              {% endif %}" />
+            {% endif %}
+            {% endfor %}
+        {% endfor %}
+        {% for row_label in range(game.board.rows + 2) %}
+            <text x="0" y="{{offset_y + pixel_res + row_label * pixel_res}}" font-size="15px">{{ row_label }}</text>
+        {% endfor %}
+        {% for col_label in range(game.board.cols + 1) %}
+            <text x="{{offset_x + pixel_res + col_label * pixel_res}}" y="15" font-size="15px">{{ col_label }}</text>
+        {% endfor %}
+
+    </svg>
+    <p>What would You like to do?</p>
+    <p>
+        <button type="button">
+            <a href="{{ url_for('new_game') }}">New game</a>
+        </button>
+    </p>
+    <p>
+        <button type="button">
+            <a href="{{ url_for('load_game') }}">Load game</a>
+        </button>
+    </p>
 </body>
 </html>
